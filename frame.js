@@ -3,7 +3,7 @@ const h = window.outerHeight;
 
 const game = new Phaser.Game(w, h, Phaser.AUTO, 'frame', { preload: preload, create: create, update: update, render: render });
 
-var intro_text1, intro_text2;
+
 
 var intro = function(){
     this.Group = game.add.group();
@@ -14,13 +14,22 @@ var intro = function(){
     this.left = game.add.button(0,(h-218)/2, 'button_left', this.prev, this);    
     this.right = game.add.button(w-101,(h-218)/2, 'button_right', this.next, this);    
     
+    
     this.header1 = game.add.sprite(180,255,'header1');
     this.header2 = game.add.sprite(180,425,'header2');
         
     this.banner_up = game.add.sprite(0,0,'intro_up');
     this.banner_down = game.add.sprite(0,h-70,'intro_down');
+    
+    // add things to group
+    this.Group.add(this.intro);
+    this.Group.add(this.left);
+    this.Group.add(this.right);
+    this.Group.add(this.header1);
+    this.Group.add(this.header2);
+    this.Group.add(this.banner_up);
+    this.Group.add(this.banner_down);
 };
-
 intro.prototype.next = function(){
     if(this.current != 4) this.current += 1;
     else this.current = 1;
@@ -38,17 +47,34 @@ intro.prototype.prev = function(){
 
 var main = function(){
     this.Group = game.add.group();
-    this.poster = game.add.sprite(0,(h-499)/2, 'main_poster');    
+    
+    this.back = game.add.sprite(0,0, 'background');   
+    this.poster = game.add.sprite((w-1153)/2,(h-374)/3, 'main_poster');    
     
     this.banner_up = game.add.sprite(0,0,'main_up');
     this.banner_down = game.add.sprite(0,h-96,'main_down');
-    /*
+    
     this.icon = [];
+    this.icon_x = (w - 509)/2;
+    this.icon_y = 600;
+    
     for(var i=1; i < 6; i++){
-        this.icon.push(game.add.sprite(0,0, 'icon'+ i.toString() ));
-    }   
-    */
+        var width = game.cache.getImage('icon'+ i.toString()).width;
+        this.icon.push(game.add.sprite(this.icon_x,this.icon_y, 'icon'+ i.toString() ));
+        
+        this.icon_x += (30 + width);
+    }  
+    
+    // add things to group
+    this.Group.add(this.back);
+    this.Group.add(this.poster);
+    this.Group.add(this.banner_up);
+    this.Group.add(this.banner_down);    
+    for(var i=0; i<this.icon.length; i++){
+        this.Group.add(this.icon[i]);
+    }
 };
+
 
 var sections = [];
 
@@ -76,13 +102,31 @@ function preload(){
     game.load.spritesheet('icon5', 'assets/images/ICON_05.png');
     
     game.load.image('background','assets/images/background.png');
+    game.load.image('test_button', 'assets/images/test_button.png');
+}
+
+var currPage;
+
+function changePage(){
+    if(currPage === 'intro'){
+        currPage = 'main';
+        game.world.bringToTop(sections[1].Group);
+    }
+    else{
+        currPage = 'intro';
+        game.world.bringToTop(sections[0].Group);
+    }
 }
 
 
 function create(){
     game.add.tileSprite(0, 0, w, h, 'background');
     
+    sections.push(new main);
     sections.push(new intro);
+    currPage = 'intro';
+    
+    game.add.button(0,0,'test_button', changePage, this);
     
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 }
@@ -92,5 +136,5 @@ function update(){
 }
 
 function render(){
-    game.debug.text('h = '+h,32,32);
+    //game.debug.text('h = '+h,32,32);
 }
