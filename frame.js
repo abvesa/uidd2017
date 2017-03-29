@@ -29,6 +29,7 @@ function preload(){
     
     game.load.image('background','assets/images/background.png');
     game.load.image('test_button', 'assets/images/test_button.png');
+    game.load.image('enter_button', 'assets/images/button_enter.png');
 }
 
 var intro = function(){
@@ -42,25 +43,27 @@ var intro = function(){
     
     this.left = game.add.button(0,(h-218)/2, 'button_left', this.prev, this);    
     this.right = game.add.button(w-101,(h-218)/2, 'button_right', this.next, this);    
-    
-    
+        
     this.header1 = game.add.sprite(180,255,'header1');
     this.header2 = game.add.sprite(180,425,'header2');
         
     this.banner_up = game.add.sprite(0,0,'intro_up');
     this.banner_down = game.add.sprite(0,h-70,'intro_down');
     
+    this.enter = game.add.button(w-320, h-62, 'enter_button', changePage, this);
+    
     // add things to group
     for(var i=0; i<this.slide.length; i++){
       this.Group.add(this.slide[i]);
     }
-
+    
     this.Group.add(this.left);
     this.Group.add(this.right);
     this.Group.add(this.header1);
     this.Group.add(this.header2);
     this.Group.add(this.banner_up);
     this.Group.add(this.banner_down);
+    this.Group.add(this.enter);
 };
 intro.prototype.next = function(){
   if(this.currSlide != 4)
@@ -98,6 +101,8 @@ var main = function(){
     this.icon_x = (w - 509)/2;
     this.icon_y = 600;
     
+    this.return = game.add.button(0,0,'test_button', changePage, this);
+    
     for(var i=1; i < 6; i++){
         var width = game.cache.getImage('icon'+ i.toString()).width;
         this.icon.push(game.add.sprite(this.icon_x,this.icon_y, 'icon'+ i.toString() ));
@@ -113,6 +118,8 @@ var main = function(){
     for(var i=0; i<this.icon.length; i++){
         this.Group.add(this.icon[i]);
     }
+    
+    this.Group.add(this.return);
 };
 
 
@@ -140,7 +147,7 @@ function create(){
     sections.push(new intro);
     currPage = 'intro';
     
-    game.add.button(0,0,'test_button', changePage, this);
+    //game.add.button(0,0,'test_button', changePage, this);
     game.world.bringToTop(sections[0].Group);
     sections[0].Group.x = w;
 
