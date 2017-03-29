@@ -63,13 +63,21 @@ var intro = function(){
     this.Group.add(this.banner_down);
 };
 intro.prototype.next = function(){
-  this.currSlide ++;
+  if(this.currSlide != 4)
+    this.currSlide ++;
+  else
+    this.currslide = 1;
+
   for(var i=0; i<this.slide.length; i++){        
     game.add.tween(this.slide[i]).to( { x: (i - this.currSlide + 1)*w }, 2000, Phaser.Easing.Quadratic.Out, true);
   }
 };
 intro.prototype.prev = function(){
-  this.currSlide --;
+  if(this.currSlide != 1)  
+    this.currSlide --;
+  else
+    this.currSlide =4;
+
   for(var i=0; i<this.slide.length; i++){
     game.add.tween(this.slide[i]).to( { x: (i - this.currSlide + 1)*w }, 2000, Phaser.Easing.Quadratic.Out, true);
   }
